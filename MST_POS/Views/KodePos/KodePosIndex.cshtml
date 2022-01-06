@@ -1,0 +1,254 @@
+﻿@using MST_POS.Models
+@model List<KodePosModel>
+@{
+    ViewBag.Title = "Kode Pos Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var kodeposGrid = new WebGrid(Model, canPage: true, rowsPerPage: 10, selectionFieldName: "selectedRow", ajaxUpdateContainerId: "gridContent");
+}
+
+@section Title{
+    Kode Pos Indonesia
+}
+
+<div class="filter-container">
+    @using (@Html.BeginForm("KodePosIndex", "KodePos", FormMethod.Post, new { Class = "general-form" }))
+    {
+        <table>
+            <tr>
+                <td>
+                    <input type="text" name="search-propinsi" placeholder="Propinsi" autocomplete="off" />
+                    <input type="text" name="search-kabupaten" placeholder="Kabupaten" autocomplete="off" />
+                </td>
+                <td>
+                    <button type="submit">Search</button>
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+
+<a class="btn btn-primary" href="javascript:;" id="create-kodepos"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add New</a>
+<div class="webgrid-container">
+    @(new HtmlString(kodeposGrid.GetHtml(columns: kodeposGrid.Columns(
+            kodeposGrid.Column("ID", header: " ", format:
+            @<text><a class="row-button-edit edit-kodepos" data-id="@item.ID" href="javascript:;">Edit</a>
+                <a class="row-button-delete delete-kodepos" data-id="@item.ID" href="@Url.Action("DeleteKodePos", "KodePos", new { ID = @item.ID })" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a></text>),
+                        kodeposGrid.Column("ID", header: "ID"),
+                        kodeposGrid.Column("NoKodePos", header: "NoKodePos"),
+                        kodeposGrid.Column("Kelurahan", header: "Kelurahan"),
+                        kodeposGrid.Column("Kecamatan", header: "Kecamatan"),
+                        kodeposGrid.Column("Jenis", header: "Jenis"),
+                        kodeposGrid.Column("Kabupaten", header: "Kabupaten"),
+                        kodeposGrid.Column("Propinsi", header: "Propinsi")
+                        )).ToHtmlString()
+                    )
+)
+</div>
+
+<script>
+    $(document).ready(function (event) {
+        function validationadd() {
+            if ($("#kodepos-add-window [name=noKodePos]").val() === "") {
+                alert("lengkapi data kode pos");
+                return false;
+            }
+            if ($("#kodepos-add-window [name=kelurahan]").val() === "") {
+                alert("lengkapi data kelurahan");
+                return false;
+            }
+            if ($("#kodepos-add-window [name=kecamatan]").val() === "") {
+                alert("lengkapi data kecamatan");
+                return false;
+            }
+            if ($("#kodepos-add-window [name=jenis]").val() === "") {
+                alert("lengkapi data jenis");
+                return false;
+            }
+            if ($("#kodepos-add-window [name=kabupaten]").val() === "") {
+                alert("lengkapi data kabupaten");
+                return false;
+            }
+            if ($("#kodepos-add-window [name=propinsi]").val() === "") {
+                alert("lengkapi data propinsi");
+                return false;
+            }
+
+            return true;
+        }
+        function validationedit() {
+            if ($("#kodepos-edit-window [name=noKodePos]").val() === "") {
+                alert("lengkapi data kode pos");
+                return false;
+            }
+            if ($("#kodepos-edit-window [name=kelurahan]").val() === "") {
+                alert("lengkapi data kelurahan");
+                return false;
+            }
+            if ($("#kodepos-edit-window [name=kecamatan]").val() === "") {
+                alert("lengkapi data kecamatan");
+                return false;
+            }
+            if ($("#kodepos-edit-window [name=jenis]").val() === "") {
+                alert("lengkapi data jenis");
+                return false;
+            }
+            if ($("#kodepos-edit-window [name=kabupaten]").val() === "") {
+                alert("lengkapi data kabupaten");
+                return false;
+            }
+            if ($("#kodepos-edit-window [name=propinsi]").val() === "") {
+                alert("lengkapi data propinsi");
+                return false;
+            }
+
+            return true;
+        }
+
+        $('#create-kodepos').click(function (event) {
+            var dataID = $(this).attr("data-id");
+            var ajaxUrl = '@(Url.Action("CreateKodePos", "KodePos"))';
+
+            $.ajax({
+                type: "GET",
+                url: ajaxUrl,
+                contentType: "application/json; charset=UTF-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    //keluarkan modal dan dialog
+                    $(".modal-layer").css("display", "flex");
+                    $(".modal-layer #kodepos-add-window").css("display", "block");
+                }
+            });
+        });
+
+        $("#kodepos-add-close").click(function (event) {
+            $("#kodepos-add-window [name=noKodePos]").empty();
+            $("#kodepos-add-window [name=kelurahan]").empty();
+            $("#kodepos-add-window [name=kecamatan]").empty();
+            $("#kodepos-add-window [name=jenis]").empty();
+            $("#kodepos-add-window [name=kabupaten]").empty();
+            $("#kodepos-add-window [name=propinsi]").empty();
+            $(".modal-layer").removeAttr("style");
+            $(".modal-layer #kodepos-add-window").removeAttr("style");
+        });
+        $("#kodepos-edit-close").click(function (event) {
+            $("#kodepos-add-window [name=noKodePos]").empty();
+            $("#kodepos-add-window [name=kelurahan]").empty();
+            $("#kodepos-add-window [name=kecamatan]").empty();
+            $("#kodepos-add-window [name=jenis]").empty();
+            $("#kodepos-add-window [name=kabupaten]").empty();
+            $("#kodepos-add-window [name=propinsi]").empty();
+            $(".modal-layer").removeAttr("style");
+            $(".modal-layer #kodepos-edit-window").removeAttr("style");
+        });
+
+        $("#submit-kodepos").click(function (event) {
+            event.preventDefault();
+            if (validationadd()) {
+                var ajaxUrl = '@(Url.Action("CreateKodePos", "KodePos"))';
+
+                var noKodePos = $("#kodepos-add-window [name=noKodePos]").val();
+                var kelurahan = $("#kodepos-add-window [name=kelurahan]").val();
+                var kecamatan = $("#kodepos-add-window [name=kecamatan]").val();
+                var jenis = $("#kodepos-add-window [name=jenis]").val();
+                var kabupaten = $("#kodepos-add-window [name=kabupaten]").val();
+                var propinsi = $("#kodepos-add-window [name=propinsi]").val();
+
+                var kodePos = {
+                    "NoKodePos": noKodePos,
+                    "Kelurahan": kelurahan,
+                    "Kecamatan": kecamatan,
+                    "Jenis": jenis,
+                    "Kabupaten": kabupaten,
+                    "Propinsi": propinsi
+                };
+
+                $.ajax({
+                    type: "POST",
+                    data: JSON.stringify(kodePos),
+                    url: ajaxUrl,
+                    contentType: "application/json; charset=UTF-8",
+                    dataType: "json",
+                    async: true,
+                    error: function (response) {
+                        console.log("AJAX Gagal");
+                    },
+                    success: function (response) {
+                        console.log("AJAX Sukses");
+                        $(".modal-layer").removeAttr("style");
+                        $(".modal-layer #kodepos-add-window").removeAttr("style");
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+        $('.edit-kodepos').click(function (event) {
+            var dataID = $(this).attr("data-id");
+            var ajaxUrl = '@(Url.Action("EditKodePos", "KodePos"))' + '?ID=' + dataID;
+
+            $.ajax({
+                type: "GET",
+                url: ajaxUrl,
+                contentType: "application/json; charset=UTF-8",
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    $("#kodepos-edit-window [name=ID]").val(data.ID);
+                    $("#kodepos-edit-window [name=noKodePos]").val(data.NoKodePos);
+                    $("#kodepos-edit-window [name=kelurahan]").val(data.Kelurahan);
+                    $("#kodepos-edit-window [name=kecamatan]").val(data.Kecamatan);
+                    $("#kodepos-edit-window [name=jenis]").val(data.Jenis);
+                    $("#kodepos-edit-window [name=kabupaten]").val(data.Kabupaten);
+                    $("#kodepos-edit-window [name=propinsi]").val(data.Propinsi);
+
+                    //keluarkan modal dan dialog
+                    $(".modal-layer").css("display", "flex");
+                    $(".modal-layer #kodepos-edit-window").css("display", "block");
+                }
+            });
+        });
+        $("#edit-kodepos").click(function (event) {
+            event.preventDefault();
+            if (validationedit()) {
+                var ajaxUrl = '@(Url.Action("EditKodePos", "KodePos"))';
+
+                var id = $("#kodepos-edit-window [name=ID]").val();
+                var noKodePos = $("#kodepos-edit-window [name=noKodePos]").val();
+                var kelurahan = $("#kodepos-edit-window [name=kelurahan]").val();
+                var kecamatan = $("#kodepos-edit-window [name=kecamatan]").val();
+                var jenis = $("#kodepos-edit-window [name=jenis]").val();
+                var kabupaten = $("#kodepos-edit-window [name=kabupaten]").val();
+                var propinsi = $("#kodepos-edit-window [name=propinsi]").val();
+
+                var kodePos = {
+                    "ID": id,
+                    "NoKodePos": noKodePos,
+                    "Kelurahan": kelurahan,
+                    "Kecamatan": kecamatan,
+                    "Jenis": jenis,
+                    "Kabupaten": kabupaten,
+                    "Propinsi": propinsi
+                };
+
+                $.ajax({
+                    type: "POST",
+                    data: JSON.stringify(kodePos),
+                    url: ajaxUrl,
+                    contentType: "application/json; charset=UTF-8",
+                    dataType: "json",
+                    async: true,
+                    error: function (response) {
+                        console.log("AJAX Gagal");
+                    },
+                    success: function (response) {
+                        console.log("AJAX Sukses");
+                        $(".modal-layer").removeAttr("style");
+                        $(".modal-layer #kodepos-edit-window").removeAttr("style");
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    });
+</script>

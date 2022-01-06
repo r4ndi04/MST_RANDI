@@ -1,0 +1,53 @@
+﻿<div id="kodepos-add-window" class="popup-dialog">
+    @using (Html.BeginForm("CreateKodePos", "KodePos", FormMethod.Post, new { Class = "general-form" }))
+    {
+        <table>
+            <tbody>
+                <tr>
+                    <td class="textarea-label">No Kode POS</td>
+                    <td class="textarea-label">:</td>
+                    <td>
+                        <div><input type="text" name="noKodePos" required autocomplete="off" /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="textarea-label">Kelurahan</td>
+                    <td class="textarea-label">:</td>
+                    <td>
+                        <div><input type="text" name="kelurahan" required autocomplete="off" /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="textarea-label">Kecamatan</td>
+                    <td class="textarea-label">:</td>
+                    <td>
+                        <div><input type="text" name="kecamatan" required autocomplete="off" /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="textarea-label">Jenis</td>
+                    <td class="textarea-label">:</td>
+                    <td>
+                        <div><input type="text" name="jenis" required autocomplete="off" /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="textarea-label">Kabupaten</td>
+                    <td class="textarea-label">:</td>
+                    <td>
+                        <div><input type="text" name="kabupaten" required autocomplete="off" /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="textarea-label">Propinsi</td>
+                    <td class="textarea-label">:</td>
+                    <td>
+                        <div><input type="text" name="propinsi" required autocomplete="off" /></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" id="submit-kodepos">Add</button>
+        <a href="javascript:;" id="kodepos-add-close" class="cancel-button"><i class="fa fa-close"></i>&nbsp;&nbsp;Close Window</a>
+    }
+</div>
